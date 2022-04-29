@@ -22,11 +22,11 @@ public class Test extends HttpServlet {
 
         RequestDispatcher getRequestDispatcher = request.getRequestDispatcher("/test.jsp");
         getRequestDispatcher.forward(request, response);
+
     }
 
     private void getUsers(HttpServletRequest request, HttpServletResponse response) throws Exception {
         List<User> users = UserDAO.getUsers();
-
         request.setAttribute("users", users);
-    }
+        }
 }

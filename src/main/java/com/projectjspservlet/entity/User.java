@@ -5,7 +5,7 @@ import com.projectjspservlet.type.UserRole;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "usera")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

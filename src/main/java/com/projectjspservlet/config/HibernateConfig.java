@@ -23,17 +23,17 @@ public class HibernateConfig {
 
                 Properties settings = new Properties();
 
-                settings.put(AvailableSettings.DRIVER, "org.postgresql.Driver");
-                settings.put(AvailableSettings.URL, "jdbc:postgresql://localhost:5432/rentalcar?useSSL=false");
-                settings.put(AvailableSettings.USER, "postgres");
-                settings.put(AvailableSettings.PASS, "asdasd");
-                settings.put(AvailableSettings.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
+                settings.put(Environment.DRIVER, "org.postgresql.Driver");
+                settings.put(Environment.URL, "jdbc:postgresql://localhost:5432/rentalcar?useSSL=false");
+                settings.put(Environment.USER, "postgres");
+                settings.put(Environment.PASS, "asdasd");
+                settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
 
-                settings.put(AvailableSettings.SHOW_SQL, "true");
+                settings.put(Environment.SHOW_SQL, "true");
 
-                settings.put(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS, "thread");
+                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
 
-                settings.put(AvailableSettings.HBM2DDL_AUTO, "create-drop");
+                settings.put(Environment.HBM2DDL_AUTO, "create");
 
                 configuration.setProperties(settings);
 
