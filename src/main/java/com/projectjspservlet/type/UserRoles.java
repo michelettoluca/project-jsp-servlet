@@ -1,6 +1,6 @@
 package com.projectjspservlet.type;
 
-public enum UserRole {
+public enum UserRoles {
     ADMIN,
     CUSTOMER
 }

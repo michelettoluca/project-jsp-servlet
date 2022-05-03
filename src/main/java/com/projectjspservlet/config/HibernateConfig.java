@@ -1,8 +1,10 @@
 package com.projectjspservlet.config;
 
 
+import com.projectjspservlet.entity.Reservation;
 import com.projectjspservlet.entity.User;
 
+import com.projectjspservlet.entity.Vehicle;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
@@ -17,7 +19,7 @@ public class HibernateConfig {
     private static SessionFactory sessionFactory;
 
     public static SessionFactory getSessionFactory() {
-        if(sessionFactory == null) {
+        if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();
 
@@ -33,11 +35,13 @@ public class HibernateConfig {
 
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
 
-                settings.put(Environment.HBM2DDL_AUTO, "create");
+                settings.put(Environment.HBM2DDL_AUTO, "create-drop");
 
                 configuration.setProperties(settings);
 
                 configuration.addAnnotatedClass(User.class);
+                configuration.addAnnotatedClass(Vehicle.class);
+                configuration.addAnnotatedClass(Reservation.class);
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties())

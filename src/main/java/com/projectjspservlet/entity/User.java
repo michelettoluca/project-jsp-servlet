@@ -1,37 +1,43 @@
+
 package com.projectjspservlet.entity;
 
-import com.projectjspservlet.type.UserRole;
+import com.projectjspservlet.type.UserRoles;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "usera")
-public class User {
+@Table(name = "users")
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
-
-    @Column(name="fistName")
+    @Column(name = "fistName")
     private String firstName;
 
-    @Column(name="lastName")
+    @Column(name = "lastName")
     private String lastName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="role")
-    private UserRole role;
+    @Column(name = "role")
+    private UserRoles role;
 
-    public User(int id, String firstName, String lastName, UserRole role) {
+    public User(int id, String firstName, String lastName, UserRoles role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
     }
 
-    public User() {
+    public User(String firstName, String lastName, UserRoles role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+    }
 
+    public User() {
     }
 
     public int getId() {
@@ -58,11 +64,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public UserRole getRole() {
+    public UserRoles getRole() {
         return role;
     }
 
-    public void setRole(UserRole role) {
+    public void setRole(UserRoles role) {
         this.role = role;
     }
 

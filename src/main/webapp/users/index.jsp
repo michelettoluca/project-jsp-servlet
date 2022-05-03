@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<c:import url="common/navbar.jsp"/>
+<c:import url="../common/navbar.jsp"/>
 <div class="container">
 
     <b>Lista utenti</b>
@@ -22,27 +22,29 @@
             <c:otherwise>
                 <ul class="user__list">
                     <c:forEach var="tmpUser" items="${users}">
-                        <c:url var="removeUserUrl" value="index">
-                            <c:param name="action">REMOVE_USER</c:param>
-                            <c:param name="id">${tmpUser.id}</c:param>
-                            <c:param name="firstName">${tmpUser.firstName}</c:param>
-                            <c:param name="lastName">${tmpUser.lastName}</c:param>
-                            <c:param name="role">${tmpUser.role}</c:param>
-                        </c:url>
                         <li class="user__item">
                             <div>
-
                                 <span class="user__fullname">${tmpUser.firstName} ${tmpUser.lastName}</span>
                                 <span class="user__role">(${tmpUser.role})</span>
                             </div>
-                            <a href="${removeUserUrl}">Remove</a>
+                            <form method="POST" action="${pageContext.request.contextPath}/users">
+                                <input type="hidden" name="action" value="DELETE_USER"/>
+                                <input type="hidden" name="id" value="${tmpUser.id}"/>
+                                <input type="hidden" name="firstName" value="${tmpUser.firstName}"/>
+                                <input type="hidden" name="lastName" value="${tmpUser.lastName}"/>
+                                <input type="hidden" name="role" value="${tmpUser.role}"/>
+
+                                <button type="submit">Delete</button>
+                            </form>
                         </li>
                     </c:forEach>
                 </ul>
             </c:otherwise>
         </c:choose>
     </div>
-    <a class="button --dark" href="add-user.jsp">Aggiungi nuovo utente</a>
+    <a class="button --dark" href="${pageContext.request.contextPath}/users/create.jsp">Aggiungi nuovo utente</a>
+
+    <c:import url="user.jsp"/>
 </div>
 </body>
 </html>
