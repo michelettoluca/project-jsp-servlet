@@ -16,7 +16,7 @@ public class UserDAO {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
-            session.save(user);
+            session.saveOrUpdate(user);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -50,15 +50,6 @@ public class UserDAO {
         }
     }
 
-    public static List<User> getCustomers() {
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            Query<User> q = session.createQuery("from User where role = :role", User.class);
-            q.setParameter("role", UserRoles.CUSTOMER);
-
-            return q.getResultList();
-        }
-    }
-
     public static User getUserById(int id) {
         // Gestire caso in cui non c'è una corrispondenza
 
@@ -69,4 +60,14 @@ public class UserDAO {
             return (User) q.getSingleResult();
         }
     }
+    
+    public static List<User> getCustomers() {
+        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
+            Query<User> q = session.createQuery("from User where role = :role", User.class);
+            q.setParameter("role", UserRoles.CUSTOMER);
+
+            return q.getResultList();
+        }
+    }
+
 }

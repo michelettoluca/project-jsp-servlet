@@ -4,7 +4,9 @@ import com.projectjspservlet.type.UserRoles;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "vehicles")
@@ -20,17 +22,20 @@ public class Vehicle implements Serializable {
     @Column(name = "model")
     private String model;
 
-    @Column(name = "dateOfRegistration")
-    private Date dateOfRegistration;
+    @Column(name = "date_of_registration")
+    private LocalDate dateOfRegistration;
 
-    @Column(name = "plateNumber")
+    @Column(name = "plate_number")
     private String plateNumber;
 
     @Column(name = "type")
     private String type;
 
+    @OneToMany(mappedBy = "vehicle")
+    private List<Reservation> reservations;
 
-    public Vehicle(int id, String brand, String model, Date dateOfRegistration, String plateNumber, String type) {
+
+    public Vehicle(int id, String brand, String model, LocalDate dateOfRegistration, String plateNumber, String type) {
         this.id = id;
         this.brand = brand;
         this.model = model;
@@ -39,12 +44,16 @@ public class Vehicle implements Serializable {
         this.type = type;
     }
 
-    public Vehicle(String brand, String model, Date dateOfRegistration, String plateNumber, String type) {
+    public Vehicle(String brand, String model, LocalDate dateOfRegistration, String plateNumber, String type) {
         this.brand = brand;
         this.model = model;
         this.dateOfRegistration = dateOfRegistration;
         this.plateNumber = plateNumber;
         this.type = type;
+    }
+
+    public Vehicle(int id) {
+        this.id = id;
     }
 
     public Vehicle() {
@@ -74,11 +83,11 @@ public class Vehicle implements Serializable {
         this.model = model;
     }
 
-    public Date getDateOfRegistration() {
+    public LocalDate getDateOfRegistration() {
         return dateOfRegistration;
     }
 
-    public void setDateOfRegistration(Date dateOfRegistration) {
+    public void setDateOfRegistration(LocalDate dateOfRegistration) {
         this.dateOfRegistration = dateOfRegistration;
     }
 
@@ -96,6 +105,18 @@ public class Vehicle implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "id=" + id +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", dateOfRegistration=" + dateOfRegistration +
+                ", plateNumber='" + plateNumber + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 }
 

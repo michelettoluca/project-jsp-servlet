@@ -5,7 +5,7 @@ import com.projectjspservlet.type.ReservationStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "reservations")
@@ -16,37 +16,44 @@ public class Reservation implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @ManyToOne
-    private User user;
+    @Column(name = "begins_at")
+    private LocalDate beginsAt;
 
-    @ManyToOne
-    private Vehicle vehicle;
-
-    @Column(name = "fromDate")
-    private Date fromDate;
-
-    @Column(name = "toDate")
-    private Date toDate;
+    @Column(name = "ends_at")
+    private LocalDate endsAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ReservationStatus status;
 
-    public Reservation(int id, User user, Vehicle vehicle, Date fromDate, Date toDate, ReservationStatus status) {
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    private Vehicle vehicle;
+
+
+    public Reservation(int id, User user, Vehicle vehicle, LocalDate beginsAt, LocalDate endsAt, ReservationStatus status) {
         this.id = id;
         this.user = user;
         this.vehicle = vehicle;
-        this.fromDate = fromDate;
-        this.toDate = toDate;
+        this.beginsAt = beginsAt;
+        this.endsAt = endsAt;
         this.status = status;
     }
 
-    public Reservation(User user, Vehicle vehicle, Date fromDate, Date toDate, ReservationStatus status) {
+    public Reservation(User user, Vehicle vehicle, LocalDate beginsAt, LocalDate endsAt) {
         this.user = user;
         this.vehicle = vehicle;
-        this.fromDate = fromDate;
-        this.toDate = toDate;
-        this.status = status;
+        this.beginsAt = beginsAt;
+        this.endsAt = endsAt;
+        this.status = ReservationStatus.PENDING;
+    }
+
+    public Reservation(int id) {
+        this.id = id;
     }
 
     public Reservation() {
@@ -77,20 +84,20 @@ public class Reservation implements Serializable {
         this.vehicle = vehicle;
     }
 
-    public Date getFromDate() {
-        return fromDate;
+    public LocalDate getBeginsAt() {
+        return beginsAt;
     }
 
-    public void setFromDate(Date fromDate) {
-        this.fromDate = fromDate;
+    public void setBeginsAt(LocalDate beginsAt) {
+        this.beginsAt = beginsAt;
     }
 
-    public Date getToDate() {
-        return toDate;
+    public LocalDate getEndsAt() {
+        return endsAt;
     }
 
-    public void setToDate(Date toDate) {
-        this.toDate = toDate;
+    public void setEndsAt(LocalDate endsAt) {
+        this.endsAt = endsAt;
     }
 
     public ReservationStatus getStatus() {
@@ -99,5 +106,16 @@ public class Reservation implements Serializable {
 
     public void setStatus(ReservationStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", beginsAt=" + beginsAt +
+                ", endsAt=" + endsAt +
+                ", status=" + status +
+                ", user=" + user +
+                '}';
     }
 }

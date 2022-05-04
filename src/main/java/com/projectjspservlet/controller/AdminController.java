@@ -4,7 +4,6 @@ import com.projectjspservlet.dao.ReservationDAO;
 import com.projectjspservlet.dao.UserDAO;
 import com.projectjspservlet.entity.Reservation;
 import com.projectjspservlet.entity.User;
-import com.projectjspservlet.type.AdminActions;
 import com.projectjspservlet.type.UserRoles;
 
 import javax.servlet.*;
@@ -44,33 +43,31 @@ public class AdminController extends HttpServlet {
             String pAction = request.getParameter("action");
             String pUserId = request.getParameter("userId");
 
-            AdminActions action = pAction != null ? AdminActions.valueOf(pAction) : AdminActions.UNDEFINED;
-
             String redirectTo = "/admin";
 
-            switch (action) {
-                case CREATE_USER:
+            switch (pAction) {
+                case "CREATE_USER":
                     System.out.println("Action: CREATE_USER");
                     createUser(request, response);
                     break;
 
-                case UPDATE_USER:
+                case "UPDATE_USER":
                     System.out.println("Action: UPDATE_USER");
 //                    updateUser(request, response);
                     break;
 
-                case DELETE_USER:
+                case "DELETE_USER":
                     System.out.println("Action: DELETE_USER");
                     deleteUser(request, response);
                     break;
 
-                case APPROVE_RESERVATION:
+                case "APPROVE_RESERVATION":
                     System.out.println("Action: APPROVE_RESERVATION");
                     redirectTo += "?userId=" + pUserId;
 //                    approveReservation(request, response);
                     break;
 
-                case DENY_RESERVATION:
+                case "DENY_RESERVATION":
                     System.out.println("Action: DENY_RESERVATION");
                     redirectTo += "?userId=" + pUserId;
 //                    denyReservation(request, response);

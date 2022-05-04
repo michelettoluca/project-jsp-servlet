@@ -2,49 +2,55 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <title>Test</title>
+    <title>Title</title>
 </head>
 <body>
-
-<c:import url="../common/navbar.jsp"/>
-<div class="container">
-
-    <b>Lista utenti</b>
-    <div>
+<div class="content">
+    <div class="container">
+        <b>Users</b>
         <c:choose>
             <c:when test="${users.isEmpty()}">
-                <i>Nessun utente</i>
+                <i>No user found</i>
             </c:when>
             <c:otherwise>
-                <ul class="user__list">
-                    <c:forEach var="tmpUser" items="${users}">
-                        <li class="user__item">
-                            <div>
-                                <span class="user__fullname">${tmpUser.firstName} ${tmpUser.lastName}</span>
-                                <span class="user__role">(${tmpUser.role})</span>
-                            </div>
-                            <form method="POST" action="${pageContext.request.contextPath}/users">
-                                <input type="hidden" name="action" value="DELETE_USER"/>
-                                <input type="hidden" name="id" value="${tmpUser.id}"/>
-                                <input type="hidden" name="firstName" value="${tmpUser.firstName}"/>
-                                <input type="hidden" name="lastName" value="${tmpUser.lastName}"/>
-                                <input type="hidden" name="role" value="${tmpUser.role}"/>
-
-                                <button type="submit">Delete</button>
-                            </form>
-                        </li>
+                <table border="1">
+                    <tr>
+                        <th>id</th>
+                        <th>firstName</th>
+                        <th>lastName</th>
+                        <th>role</th>
+                    </tr>
+                    <c:forEach var="user" items="${users}">
+                        <c:url var="updateUserUrl" value="users">
+                            <c:param name="action">UPDATE_USER</c:param>
+                            <c:param name="id">${user.id}</c:param>
+                            <c:param name="firstName">${user.firstName}</c:param>
+                            <c:param name="lastName">${user.lastName}</c:param>
+                            <c:param name="role">${user.role}</c:param>
+                        </c:url>
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.firstName}</td>
+                            <td>${user.lastName}</td>
+                            <td>${user.role}</td>
+                            <td>
+                                <form method="POST" action="users">
+                                    <input type="hidden" name="action" value="DELETE_USER">
+                                    <input type="hidden" name="id" value="${user.id}">
+                                    <input type="submit" value="Delete">
+                                </form>
+                            </td>
+                            <td>
+                                <a href="${updateUserUrl}">Update</a>
+                            </td>
+                        </tr>
                     </c:forEach>
-                </ul>
+                </table>
             </c:otherwise>
         </c:choose>
-    </div>
-    <a class="button --dark" href="${pageContext.request.contextPath}/users/create.jsp">Aggiungi nuovo utente</a>
 
-    <c:import url="user.jsp"/>
+        <a href="?action=CREATE_USER">Add new user</a>
+    </div>
 </div>
 </body>
 </html>

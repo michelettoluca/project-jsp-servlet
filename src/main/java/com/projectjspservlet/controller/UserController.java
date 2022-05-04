@@ -2,7 +2,6 @@ package com.projectjspservlet.controller;
 
 import com.projectjspservlet.dao.UserDAO;
 import com.projectjspservlet.entity.User;
-import com.projectjspservlet.type.UserActions;
 import com.projectjspservlet.type.UserRoles;
 
 import javax.servlet.*;
@@ -17,15 +16,39 @@ public class UserController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            String pAction = request.getParameter("action") != null ? request.getParameter("action") : "DEFAULT";
             String pUserId = request.getParameter("userId");
 
-            if (pUserId != null) {
-                getUserById(request, response, pUserId);
+            String dispatchTo = "/users";
+
+            switch (pAction) {
+                case "CREATE_USER":
+                    System.out.println("CREATE_USER");
+                    dispatchTo += "/create.jsp";
+
+                    break;
+
+                case "UPDATE_USER":
+                    System.out.println("UPDATE_USER");
+                    dispatchTo += "/update.jsp";
+
+                    String pId = request.getParameter("id");
+                    getUserById(request, response, pId);
+
+                    break;
+
+                default:
+                    System.out.println("DEFAULT");
+                    dispatchTo += "/index.jsp";
+
+                    if (pUserId != null) {
+                        getUserById(request, response, pUserId);
+                    }
+
+                    getUsers(request, response);
             }
 
-            getUsers(request, response);
-
-            RequestDispatcher getRequestDispatcher = request.getRequestDispatcher("/users/index.jsp");
+            RequestDispatcher getRequestDispatcher = request.getRequestDispatcher(dispatchTo);
             getRequestDispatcher.forward(request, response);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -37,26 +60,24 @@ public class UserController extends HttpServlet {
         try {
             String pAction = request.getParameter("action");
 
-            UserActions action = pAction != null ? UserActions.valueOf(pAction) : UserActions.UNDEFINED;
-
-            switch (action) {
-                case CREATE_USER:
+            switch (pAction) {
+                case "CREATE_USER":
                     System.out.println("CREATE_USER");
                     createUser(request, response);
                     break;
 
-                case UPDATE_USER:
+                case "UPDATE_USER":
                     System.out.println("UPDATE_USER");
                     updateUser(request, response);
                     break;
 
-                case DELETE_USER:
+                case "DELETE_USER":
                     System.out.println("DELETE_USER");
                     deleteUser(request, response);
                     break;
 
                 default:
-                    System.out.println("UNDEFINED");
+                    System.out.println("DEFAULT");
             }
 
             response.sendRedirect(request.getContextPath() + "/users");
@@ -75,11 +96,7 @@ public class UserController extends HttpServlet {
         int userId = Integer.parseInt(pUserId);
         User user = UserDAO.getUserById(userId);
 
-        if (user != null) {
-            request.setAttribute("user", user);
-        } else {
-            request.setAttribute("user", null);
-        }
+        request.setAttribute("user", user);
     }
 
     private void createUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -104,12 +121,10 @@ public class UserController extends HttpServlet {
     }
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        UserRoles role = UserRoles.valueOf(request.getParameter("role"));
+        String pId = request.getParameter("id");
+        int id = Integer.parseInt(pId);
 
-        User user = new User(id, firstName, lastName, role);
+        User user = UserDAO.getUserById(id);
 
         UserDAO.deleteUser(user);
     }

@@ -298,8 +298,8 @@ hr {
 }
 
 .vehicle__info__list {
-    display: flex;
-    align-items: flex-end;
+    display: grid;
+    grid-template-columns: 128px 64px auto;
     column-gap: 2.5rem;
 }
 

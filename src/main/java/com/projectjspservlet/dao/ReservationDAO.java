@@ -11,13 +11,13 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class ReservationDAO {
-    public static void addReservation(Reservation reservation) {
+    public static void saveReservation(Reservation reservation) {
         Transaction transaction = null;
 
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
-            session.save(reservation);
+            session.saveOrUpdate(reservation);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -28,7 +28,7 @@ public class ReservationDAO {
         }
     }
 
-    public static void removeReservation(Reservation reservation) {
+    public static void deleteReservation(Reservation reservation) {
         Transaction transaction = null;
 
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
@@ -48,6 +48,15 @@ public class ReservationDAO {
     public static List<Reservation> getReservations() {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             return session.createQuery("from Reservation", Reservation.class).list();
+        }
+    }
+
+    public static Reservation getReservationById(int id) {
+        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
+            Query<Reservation> q = session.createQuery("from Reservation where id = :id", Reservation.class);
+            q.setParameter("id", id);
+
+            return (Reservation) q.getSingleResult();
         }
     }
 
