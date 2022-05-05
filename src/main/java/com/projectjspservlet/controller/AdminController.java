@@ -19,6 +19,12 @@ public class AdminController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            User sUser = (User) request.getSession().getAttribute("user");
+
+            if (sUser.getRole() != UserRoles.ADMIN) {
+                response.sendRedirect("index?error=UNAUTHORIZED");
+            }
+
             String pUserId = request.getParameter("userId");
 
             if (pUserId != null) {
@@ -52,29 +58,30 @@ public class AdminController extends HttpServlet {
                     break;
 
                 case "UPDATE_USER":
-                    System.out.println("Action: UPDATE_USER");
+                    System.out.println("UPDATE_USER");
 //                    updateUser(request, response);
                     break;
 
                 case "DELETE_USER":
-                    System.out.println("Action: DELETE_USER");
+                    System.out.println("DELETE_USER");
                     deleteUser(request, response);
                     break;
 
                 case "APPROVE_RESERVATION":
-                    System.out.println("Action: APPROVE_RESERVATION");
+                    System.out.println("APPROVE_RESERVATION");
                     redirectTo += "?userId=" + pUserId;
-//                    approveReservation(request, response);
+
+                    approveReservation(request, response);
                     break;
 
                 case "DENY_RESERVATION":
-                    System.out.println("Action: DENY_RESERVATION");
+                    System.out.println("DENY_RESERVATION");
                     redirectTo += "?userId=" + pUserId;
 //                    denyReservation(request, response);
                     break;
 
                 default:
-                    System.out.println("Action: UNDEFINED");
+                    System.out.println("DEFAULT");
             }
 
             response.sendRedirect(request.getContextPath() + redirectTo);
@@ -87,19 +94,19 @@ public class AdminController extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         UserRoles role = UserRoles.valueOf(request.getParameter("role"));
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
 
-        User newUser = new com.projectjspservlet.entity.User(firstName, lastName, role);
+        User newUser = new com.projectjspservlet.entity.User(firstName, lastName, role, username, password);
 
         UserDAO.saveUser(newUser);
     }
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        UserRoles role = UserRoles.valueOf(request.getParameter("role"));
+        String pId = request.getParameter("id");
+        int id = Integer.parseInt(pId);
 
-        User user = new User(id, firstName, lastName, role);
+        User user = UserDAO.getUser(id);
 
         UserDAO.deleteUser(user);
     }
@@ -112,7 +119,7 @@ public class AdminController extends HttpServlet {
 
     private void getUserById(HttpServletRequest request, HttpServletResponse response, String pUserId) throws Exception {
         int userId = Integer.parseInt(pUserId);
-        User user = UserDAO.getUserById(userId);
+        User user = UserDAO.getUser(userId);
 
         if (user != null) {
             request.setAttribute("user", user);
@@ -136,4 +143,14 @@ public class AdminController extends HttpServlet {
 
         request.setAttribute("approvedReservations", reservations);
     }
+
+    private void approveReservation(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String pId = request.getParameter("id");
+
+        int id = Integer.parseInt(pId);
+
+        ReservationDAO.approveReservation(id);
+    }
+
+
 }

@@ -10,9 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 
@@ -42,7 +40,7 @@ public class VehicleController extends HttpServlet {
                     getVehicleById(request, response, pId);
 
                     break;
-                    
+
                 default:
                     System.out.println("DEFAULT");
                     dispatchTo += "/index.jsp";
@@ -101,7 +99,8 @@ public class VehicleController extends HttpServlet {
 
     private void getVehicleById(HttpServletRequest request, HttpServletResponse response, String pVehicleId) throws Exception {
         int vehicleId = Integer.parseInt(pVehicleId);
-        Vehicle vehicle = VehicleDAO.getVehicleById(vehicleId);
+
+        Vehicle vehicle = VehicleDAO.getVehicle(vehicleId);
 
         request.setAttribute("vehicle", vehicle);
     }
@@ -119,6 +118,7 @@ public class VehicleController extends HttpServlet {
         Vehicle vehicle;
         if (pId != null) {
             int id = Integer.parseInt(pId);
+
             vehicle = new Vehicle(id, pBrand, pModel, dateOfRegistration, pPlateNumber, pType);
         } else {
             vehicle = new Vehicle(pBrand, pModel, dateOfRegistration, pPlateNumber, pType);
@@ -129,10 +129,9 @@ public class VehicleController extends HttpServlet {
 
     private void deleteVehicle(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String pId = request.getParameter("id");
+
         int id = Integer.parseInt(pId);
 
-        Vehicle vehicle = VehicleDAO.getVehicleById(id);
-
-        VehicleDAO.deleteVehicle(vehicle);
+        VehicleDAO.deleteVehicle(id);
     }
 }

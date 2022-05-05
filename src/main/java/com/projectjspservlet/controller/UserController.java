@@ -94,38 +94,59 @@ public class UserController extends HttpServlet {
 
     private void getUserById(HttpServletRequest request, HttpServletResponse response, String pUserId) throws Exception {
         int userId = Integer.parseInt(pUserId);
-        User user = UserDAO.getUserById(userId);
+        
+        User user = UserDAO.getUser(userId);
 
         request.setAttribute("user", user);
     }
 
     private void createUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        UserRoles role = UserRoles.valueOf(request.getParameter("role"));
+        String pFirstName = request.getParameter("firstName");
+        String pLastName = request.getParameter("lastName");
+        String pRole = request.getParameter("role");
+        String pPassword = request.getParameter("password");
+        String pUsername = request.getParameter("username");
 
-        User newUser = new com.projectjspservlet.entity.User(firstName, lastName, role);
+        UserRoles role = UserRoles.valueOf(pRole);
+
+        User newUser = new User(pFirstName, pLastName, role, pPassword, pUsername);
 
         UserDAO.saveUser(newUser);
     }
 
     private void updateUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        UserRoles role = UserRoles.valueOf(request.getParameter("role"));
+        String pId = request.getParameter("id");
+        String pFirstName = request.getParameter("firstName");
+        String pLastName = request.getParameter("lastName");
+        String pRole = request.getParameter("role");
+        String pUsername = request.getParameter("username");
+        String pPassword = request.getParameter("password");
 
-        User newUser = new com.projectjspservlet.entity.User(id, firstName, lastName, role);
+        int id = Integer.parseInt(pId);
 
-        UserDAO.saveUser(newUser);
+        User user = UserDAO.getUser(id);
+
+        if (pFirstName != null) user.setFirstName(pFirstName);
+
+        if (pLastName != null) user.setLastName(pLastName);
+
+        if (pRole != null) {
+            UserRoles role = UserRoles.valueOf(pRole);
+            user.setRole(role);
+        }
+
+        if (pUsername != null) user.setUsername(pUsername);
+
+        if (pPassword != null) user.setPassword(pPassword);
+
+        UserDAO.saveUser(user);
     }
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String pId = request.getParameter("id");
+
         int id = Integer.parseInt(pId);
 
-        User user = UserDAO.getUserById(id);
-
-        UserDAO.deleteUser(user);
+        UserDAO.deleteUser(id);
     }
 }

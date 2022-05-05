@@ -26,6 +26,22 @@ public class VehicleDAO {
         }
     }
 
+
+    public static List<Vehicle> getVehicles() {
+        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
+            return session.createQuery("from Vehicle", Vehicle.class).list();
+        }
+    }
+
+    public static Vehicle getVehicle(int id) {
+        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
+            Query<Vehicle> q = session.createQuery("from Vehicle where id = :id", Vehicle.class);
+            q.setParameter("id", id);
+
+            return q.getSingleResult();
+        }
+    }
+
     public static void deleteVehicle(Vehicle vehicle) {
         Transaction transaction = null;
 
@@ -43,20 +59,22 @@ public class VehicleDAO {
         }
     }
 
-    public static List<Vehicle> getVehicles() {
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            return session.createQuery("from Vehicle", Vehicle.class).list();
-        }
-    }
-
-    public static Vehicle getVehicleById(int id) {
-        // Gestire caso in cui non c'è una corrispondenza
+    public static void deleteVehicle(int id) {
+        Transaction transaction = null;
 
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            Query<Vehicle> q = session.createQuery("from Vehicle where id = :id", Vehicle.class);
-            q.setParameter("id", id);
+            transaction = session.beginTransaction();
 
-            return (Vehicle) q.getSingleResult();
+            Vehicle vehicle = getVehicle(id);
+            session.delete(vehicle);
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+
+            e.printStackTrace();
         }
     }
 }

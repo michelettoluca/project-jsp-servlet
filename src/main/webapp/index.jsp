@@ -9,7 +9,6 @@
     <title>Test</title>
 </head>
 <body>
-
 <c:import url="common/navbar.jsp"/>
 <div class="container">
 </div>

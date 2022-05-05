@@ -105,7 +105,7 @@ public class ReservationController extends HttpServlet {
     private void getReservationById(HttpServletRequest request, HttpServletResponse response, String pReservationId) throws Exception {
         int reservationId = Integer.parseInt(pReservationId);
 
-        Reservation reservation = ReservationDAO.getReservationById(reservationId);
+        Reservation reservation = ReservationDAO.getReservation(reservationId);
 
         request.setAttribute("reservation", reservation);
     }
@@ -125,7 +125,7 @@ public class ReservationController extends HttpServlet {
 
     private void getVehicleById(HttpServletRequest request, HttpServletResponse response, String pVehicleId) throws Exception {
         int vehicleId = Integer.parseInt(pVehicleId);
-        Vehicle vehicle = VehicleDAO.getVehicleById(vehicleId);
+        Vehicle vehicle = VehicleDAO.getVehicle(vehicleId);
 
         request.setAttribute("vehicle", vehicle);
     }
@@ -144,8 +144,8 @@ public class ReservationController extends HttpServlet {
         int userId = Integer.parseInt(pUserId);
         int vehicleId = Integer.parseInt(pVehicleId);
 
-        User user = UserDAO.getUserById(userId);
-        Vehicle vehicle = VehicleDAO.getVehicleById(vehicleId);
+        User user = UserDAO.getUser(userId);
+        Vehicle vehicle = VehicleDAO.getVehicle(vehicleId);
 
         Reservation reservation;
         if (pId != null) {
@@ -163,9 +163,7 @@ public class ReservationController extends HttpServlet {
     private void deleteReservation(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String pId = request.getParameter("id");
         int id = Integer.parseInt(pId);
-
-        Reservation reservation = ReservationDAO.getReservationById(id);
-
-        ReservationDAO.deleteReservation(reservation);
+        
+        ReservationDAO.deleteReservation(id);
     }
 }
