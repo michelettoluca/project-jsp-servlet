@@ -73,7 +73,7 @@ public class ReservationServlet extends HttpServlet {
 
             }
 
-            response.sendRedirect("reservations");
+            response.sendRedirect("vehicles");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -107,7 +107,15 @@ public class ReservationServlet extends HttpServlet {
         User user = UserDAO.getUser(userId);
         Vehicle vehicle = VehicleDAO.getVehicle(vehicleId);
 
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println(user);
+        System.out.println(vehicle);
+        System.out.println(beginsAt);
+        System.out.println(endsAt);
+
         Reservation reservation = new Reservation(user, vehicle, beginsAt, endsAt, ReservationStatus.PENDING);
+        
+        System.out.println(reservation);
 
         ReservationDAO.saveReservation(reservation);
     }

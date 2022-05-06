@@ -95,10 +95,10 @@ public class VehicleServlet extends HttpServlet {
         if (pFrom != null && pTo != null) {
             LocalDate from = LocalDate.parse(pFrom);
             LocalDate to = LocalDate.parse(pTo);
-            
+
             List<Vehicle> vehicles = VehicleDAO.getVehicles();
 
-            request.setAttribute("vehicles", new ArrayList<>());
+            request.setAttribute("vehicles", vehicles);
         }
 
 

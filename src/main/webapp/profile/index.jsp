@@ -27,7 +27,7 @@
             <th>To</th>
             <th>Status</th>
         </tr>
-        <c:forEach var="reservation" items="${reservations}">
+        <c:forEach var="reservation" items="${user.reservations}">
             <tr>
                 <td>${reservation.vehicle.brand}</td>
                 <td>${reservation.vehicle.model}</td>
