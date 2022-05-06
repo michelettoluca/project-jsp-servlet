@@ -12,7 +12,7 @@
 
 <div class="form-wrapper">
     <form method="POST" action="${pageContext.request.contextPath}/vehicles">
-        <span class="form-header">Add new user</span>
+        <span class="form-header">Add new vehicle</span>
         <input type="hidden" name="action" value="CREATE_VEHICLE"/>
         <div class="form-field">
             <label class="input-label" for="brand">Brand</label>

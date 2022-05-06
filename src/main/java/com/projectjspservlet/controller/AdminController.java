@@ -4,12 +4,15 @@ import com.projectjspservlet.dao.ReservationDAO;
 import com.projectjspservlet.dao.UserDAO;
 import com.projectjspservlet.entity.Reservation;
 import com.projectjspservlet.entity.User;
+import com.projectjspservlet.type.ReservationStatus;
 import com.projectjspservlet.type.UserRoles;
+import com.projectjspservlet.utils.Utils;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -19,69 +22,88 @@ public class AdminController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            User sUser = (User) request.getSession().getAttribute("user");
+            boolean isAllowed = Utils.verifyRole(request, Arrays.asList(UserRoles.ADMIN));
 
-            if (sUser.getRole() != UserRoles.ADMIN) {
-                response.sendRedirect("index?error=UNAUTHORIZED");
+            if (!isAllowed) {
+                response.sendRedirect(request.getContextPath() + "?error=UNAUTHORIZED");
+                return;
             }
+
+            String pAction = request.getParameter("action");
+            if (pAction == null) pAction = "DEFAULT";
 
             String pUserId = request.getParameter("userId");
 
+            String dispatchTo = "admin";
+
+            System.out.println("GET: " + pAction);
+            switch (pAction) {
+                case "ADD_CUSTOMER":
+                    dispatchTo += "/add-customer.jsp";
+
+                    break;
+
+                case "EDIT_CUSTOMER":
+                    dispatchTo += "/edit-customer.jsp";
+
+                    break;
+
+                case "DELETE_CUSTOMER":
+                    dispatchTo += "/delete-customer.jsp";
+                    break;
+
+                default:
+                    dispatchTo += "/index.jsp";
+
+            }
+
             if (pUserId != null) {
-                getUserById(request, response, pUserId);
+                int userId = Integer.parseInt(pUserId);
+
+                getCustomer(request, response, userId);
+                getCustomerReservations(request, response, userId);
             }
 
             getCustomers(request, response);
-            getReservations(request, response);
-            getPendingReservations(request, response);
 
-            RequestDispatcher getRequestDispatcher = request.getRequestDispatcher("/admin/index.jsp");
+            RequestDispatcher getRequestDispatcher = request.getRequestDispatcher(dispatchTo);
             getRequestDispatcher.forward(request, response);
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         try {
             String pAction = request.getParameter("action");
             String pUserId = request.getParameter("userId");
 
             String redirectTo = "/admin";
 
+            System.out.println("POST: " + pAction);
             switch (pAction) {
-                case "CREATE_USER":
-                    System.out.println("Action: CREATE_USER");
-                    createUser(request, response);
+                case "ADD_CUSTOMER":
+                    addCustomer(request, response);
+
                     break;
 
-                case "UPDATE_USER":
-                    System.out.println("UPDATE_USER");
-//                    updateUser(request, response);
+                case "EDIT_CUSTOMER":
+                    editCustomer(request, response);
+
                     break;
 
-                case "DELETE_USER":
-                    System.out.println("DELETE_USER");
-                    deleteUser(request, response);
+                case "DELETE_CUSTOMER":
+                    deleteCustomer(request, response);
+
                     break;
 
-                case "APPROVE_RESERVATION":
-                    System.out.println("APPROVE_RESERVATION");
+                case "UPDATE_RESERVATION_STATUS":
                     redirectTo += "?userId=" + pUserId;
 
-                    approveReservation(request, response);
-                    break;
+                    updateReservationStatus(request, response);
 
-                case "DENY_RESERVATION":
-                    System.out.println("DENY_RESERVATION");
-                    redirectTo += "?userId=" + pUserId;
-//                    denyReservation(request, response);
                     break;
-
-                default:
-                    System.out.println("DEFAULT");
             }
 
             response.sendRedirect(request.getContextPath() + redirectTo);
@@ -90,26 +112,6 @@ public class AdminController extends HttpServlet {
         }
     }
 
-    private void createUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        UserRoles role = UserRoles.valueOf(request.getParameter("role"));
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        User newUser = new com.projectjspservlet.entity.User(firstName, lastName, role, username, password);
-
-        UserDAO.saveUser(newUser);
-    }
-
-    private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String pId = request.getParameter("id");
-        int id = Integer.parseInt(pId);
-
-        User user = UserDAO.getUser(id);
-
-        UserDAO.deleteUser(user);
-    }
 
     private void getCustomers(HttpServletRequest request, HttpServletResponse response) throws Exception {
         List<User> customers = UserDAO.getCustomers();
@@ -117,13 +119,15 @@ public class AdminController extends HttpServlet {
         request.setAttribute("customers", customers);
     }
 
-    private void getUserById(HttpServletRequest request, HttpServletResponse response, String pUserId) throws Exception {
-        int userId = Integer.parseInt(pUserId);
+    private void getCustomer(HttpServletRequest request, HttpServletResponse response, int userId) throws Exception {
         User user = UserDAO.getUser(userId);
 
-        if (user != null) {
-            request.setAttribute("user", user);
-        }
+        if (user != null) request.setAttribute("user", user);
+    }
+
+    private void getCustomerReservations(HttpServletRequest request, HttpServletResponse response, int userId) throws Exception {
+        List<Reservation> userReservations = ReservationDAO.getUserReservation(userId);
+        request.setAttribute("userReservations", userReservations);
     }
 
     private void getReservations(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -144,13 +148,49 @@ public class AdminController extends HttpServlet {
         request.setAttribute("approvedReservations", reservations);
     }
 
-    private void approveReservation(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    private void addCustomer(HttpServletRequest request, HttpServletResponse response) {
+        String pFirstName = request.getParameter("firstName");
+        String pLastName = request.getParameter("lastName");
+        String pUsername = request.getParameter("username");
+        String pPassword = request.getParameter("password");
+
+        User newUser = new User(pFirstName, pLastName, UserRoles.CUSTOMER, pUsername, pPassword);
+
+        UserDAO.createUser(newUser);
+    }
+
+    private void deleteCustomer(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String pId = request.getParameter("id");
+        int id = Integer.parseInt(pId);
+
+        User user = UserDAO.getUser(id);
+
+        UserDAO.deleteUser(user);
+    }
+
+    private void editCustomer(HttpServletRequest request, HttpServletResponse response) {
+        String pId = request.getParameter("id");
+        String pFirstName = request.getParameter("firstName");
+        String pLastName = request.getParameter("lastName");
+        String pRole = request.getParameter("role");
+        String pUsername = request.getParameter("username");
+        String pPassword = request.getParameter("password");
 
         int id = Integer.parseInt(pId);
 
-        ReservationDAO.approveReservation(id);
+        UserRoles role = pRole != null ? UserRoles.valueOf(pRole) : null;
+
+        UserDAO.updateUser(new User(id, pFirstName, pLastName, role, pUsername, pPassword));
     }
 
+    private void updateReservationStatus(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String pReservationId = request.getParameter("reservationId");
+        String pReservationStatus = request.getParameter("reservationStatus");
 
+        int id = Integer.parseInt(pReservationId);
+        ReservationStatus status = ReservationStatus.valueOf(pReservationStatus);
+
+        ReservationDAO.updateReservationStatus(id, status);
+    }
 }

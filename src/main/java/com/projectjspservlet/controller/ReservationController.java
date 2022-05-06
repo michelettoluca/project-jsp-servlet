@@ -26,25 +26,26 @@ public class ReservationController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String pAction = request.getParameter("action") != null ? request.getParameter("action") : "DEFAULT";
+            String pVehicleId = request.getParameter("vehicleId");
 
-            String dispatchTo = "/reservations";
+            String dispatchTo = "";
 
             switch (pAction) {
                 case "CREATE_RESERVATION":
                     System.out.println("CREATE_RESERVATION");
-                    dispatchTo += "/create.jsp";
+                    dispatchTo += "/reservations/create.jsp";
 
                     getUsers(request, response);
-                    getVehicles(request, response);
+                    getVehicle(request, response, pVehicleId);
 
                     break;
 
                 case "UPDATE_RESERVATION":
                     System.out.println("UPDATE_RESERVATION");
-                    dispatchTo += "/update.jsp";
+                    dispatchTo += "/reservations/update.jsp";
                     String pReservationId = request.getParameter("id");
 
-                    getReservationById(request, response, pReservationId);
+                    getReservation(request, response, pReservationId);
                     getUsers(request, response);
                     getVehicles(request, response);
 
@@ -74,7 +75,10 @@ public class ReservationController extends HttpServlet {
                 case "CREATE_RESERVATION":
                     System.out.println("CREATE_RESERVATION");
                     saveReservation(request, response);
-                    break;
+
+                    response.sendRedirect("profile");
+
+                    return;
 
                 case "UPDATE_RESERVATION":
                     System.out.println("UPDATE_RESERVATION");
@@ -102,7 +106,7 @@ public class ReservationController extends HttpServlet {
         request.setAttribute("reservations", reservations);
     }
 
-    private void getReservationById(HttpServletRequest request, HttpServletResponse response, String pReservationId) throws Exception {
+    private void getReservation(HttpServletRequest request, HttpServletResponse response, String pReservationId) throws Exception {
         int reservationId = Integer.parseInt(pReservationId);
 
         Reservation reservation = ReservationDAO.getReservation(reservationId);
@@ -123,7 +127,7 @@ public class ReservationController extends HttpServlet {
     }
 
 
-    private void getVehicleById(HttpServletRequest request, HttpServletResponse response, String pVehicleId) throws Exception {
+    private void getVehicle(HttpServletRequest request, HttpServletResponse response, String pVehicleId) throws Exception {
         int vehicleId = Integer.parseInt(pVehicleId);
         Vehicle vehicle = VehicleDAO.getVehicle(vehicleId);
 
@@ -163,7 +167,7 @@ public class ReservationController extends HttpServlet {
     private void deleteReservation(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String pId = request.getParameter("id");
         int id = Integer.parseInt(pId);
-        
+
         ReservationDAO.deleteReservation(id);
     }
 }

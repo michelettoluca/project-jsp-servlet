@@ -11,6 +11,7 @@
 <body>
 <div class="form-wrapper">
     <form method="POST" action="${pageContext.request.contextPath}/auth">
+        <button type="button" name="back" onclick="history.back()">Go back</button>
         <span class="form-header">Sign in</span>
         <input type="hidden" name="action" value="SIGN_IN"/>
         <div class="form-field">

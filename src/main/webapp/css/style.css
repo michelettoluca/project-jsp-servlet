@@ -25,13 +25,18 @@ html {
 a {
     display: block;
     text-decoration: none;
-    color: inherit;
+    color: dodgerblue;
 }
 
 hr {
     height: 1px;
     background-color: var(--gray-200);
     margin: 1rem 0;
+}
+
+table, th, td {
+    border: 1px solid var(--gray-400);
+    padding: .5rem;
 }
 
 .--hidden {
@@ -42,6 +47,13 @@ hr {
 
 .nav__wrapper {
     border-bottom: 1px solid var(--gray-300);
+}
+
+.container {
+    margin: 0 auto;
+    padding: 1.5rem;
+
+    max-width: 1200px;
 }
 
 .content {

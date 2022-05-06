@@ -12,7 +12,7 @@
             <input class="input-text" type="text" name="query" placeholder="Search customer">
             <input class="--hidden" type="submit"/>
         </form>
-        <a href="admin/create-customer.jsp" class="button--dashed">
+        <a href="admin?action=ADD_CUSTOMER" class="button--dashed">
             + Add another customer
         </a>
         <div class="customers__list">

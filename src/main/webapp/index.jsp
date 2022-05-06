@@ -10,7 +10,10 @@
 </head>
 <body>
 <c:import url="common/navbar.jsp"/>
+
+
 <div class="container">
+    <h1>RENTAL CAR HOME!!!</h1>
 </div>
 </body>
 </html>

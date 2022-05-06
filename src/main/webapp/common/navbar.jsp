@@ -4,19 +4,22 @@
     <nav class="nav">
         <span class="nav__logo">Rental Car</span>
         <div class="nav__items">
-            <a class="nav__item" href="#">Home</a>
-            <a class="nav__item" href="#">Parco auto</a>
+            <a class="nav__item" href="${pageContext.request.contextPath}">Home</a>
+            <a class="nav__item" href="vehicles">Vehicles</a>
+            <c:if test="${sessionScope.userRole == 'ADMIN'}">
+                <a class="nav__item" href="admin">Admin</a>
+            </c:if>
         </div>
 
         <div class="nav__auth">
             <c:choose>
-                <c:when test="${session.cookie.user}">
-                    <a href="#" class="button">Sign Out</a>
-                    <a href="#" class="button">Profile</a>
+                <c:when test="${sessionScope.userId != null}">
+                    <a href="profile" class="button">Profile</a>
+                    <a href="auth?action=SIGN_OUT" class="button">Sign out</a>
                 </c:when>
                 <c:otherwise>
-                    <a href="#" class="button">Sign In</a>
-                    <a href="#" class="button">Sign Up</a>
+                    <a href="auth?action=SIGN_IN" class="button">Sign in</a>
+                    <a href="auth?action=SIGN_UP" class="button">Sign up</a>
                 </c:otherwise>
             </c:choose>
         </div>

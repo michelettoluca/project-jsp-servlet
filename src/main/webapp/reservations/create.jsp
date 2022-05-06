@@ -15,22 +15,21 @@
     <form method="POST" action="${pageContext.request.contextPath}/reservations">
         <span class="form-header">Add new reservation</span>
         <input type="hidden" name="action" value="CREATE_RESERVATION"/>
+        <input type="hidden" name="vehicleId" value="${param.vehicleId}"/>
+        <input type="hidden" name="userId" value="${sessionScope.userId}"/>
         <div class="form-field">
-            <label class="input-label" for="userId">User</label>
-            <select class="input-select" name="userId" id="userId">
-                <c:forEach var="user" items="${users}">
-                    <option value="${user.id}">${user.firstName} ${user.lastName}</option>
-                </c:forEach> class="input-select"
-            </select>
+            <span class="input-label">Vehicle</span>
+            <p>${vehicle.brand} - ${vehicle.model}</p>
         </div>
         <div class="form-field">
-            <label class="input-label" for="vehicleId">Vehicle</label>
-            <select class="input-select" name="vehicleId" id="vehicleId">
-                <c:forEach var="vehicle" items="${vehicles}">
-                    <option value="${vehicle.id}">${vehicle.brand} - ${vehicle.model}</option>
-                </c:forEach>
-            </select>
+            <span class="input-label">Plate #</span>
+            <p>${vehicle.plateNumber}</p>
         </div>
+        <div class="form-field">
+            <span class="input-label">Type</span>
+            <p>${vehicle.type}</p>
+        </div>
+        <hr>
         <div class="form-field">
             <label class="input-label" for="beginsAt">From</label>
             <input class="input-text" type="date" name="beginsAt" id="beginsAt"/>

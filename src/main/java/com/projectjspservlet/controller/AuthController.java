@@ -24,7 +24,6 @@ public class AuthController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String pAction = request.getParameter("action");
-
             if (pAction == null) pAction = "DEFAULT";
 
             String dispatchTo = "/auth";
@@ -33,12 +32,13 @@ public class AuthController extends HttpServlet {
                 case "SIGN_IN":
                     System.out.println("SIGN_IN");
                     dispatchTo += "/sign-in.jsp";
+
                     break;
 
                 case "SIGN_UP":
                     System.out.println("SIGN_UP");
                     dispatchTo += "/sign-up.jsp";
-                    
+
                     break;
 
                 case "SIGN_OUT":
@@ -51,7 +51,6 @@ public class AuthController extends HttpServlet {
                     System.out.println("DEFAULT");
                     dispatchTo += "/index.jsp";
             }
-
 
             RequestDispatcher getRequestDispatcher = request.getRequestDispatcher(dispatchTo);
             getRequestDispatcher.forward(request, response);
@@ -94,7 +93,7 @@ public class AuthController extends HttpServlet {
 
         UserRoles role = UserRoles.CUSTOMER;
 
-        User user = UserDAO.saveUser(new User(pFirstName, pLastName, role, pUsername, pPassword));
+        User user = UserDAO.createUser(new User(pFirstName, pLastName, role, pUsername, pPassword));
 
         String redirectTo;
 
@@ -102,7 +101,7 @@ public class AuthController extends HttpServlet {
             request.getSession().setAttribute("userId", user.getId());
             request.getSession().setAttribute("userRole", user.getRole());
 
-            redirectTo = "auth";
+            redirectTo = request.getContextPath();
         } else {
             redirectTo = String.format("auth?action=SIGN_UP&firstName=%s&lastName=%s&error=%s", pFirstName, pLastName, "USERNAME_TAKEN");
         }
@@ -123,7 +122,7 @@ public class AuthController extends HttpServlet {
                 request.getSession().setAttribute("userId", user.getId());
                 request.getSession().setAttribute("userRole", user.getRole());
 
-                redirectTo = "auth";
+                redirectTo = request.getContextPath();
 
             } else {
                 request.setAttribute("username", user.getUsername());
@@ -141,6 +140,6 @@ public class AuthController extends HttpServlet {
         request.getSession().removeAttribute("userId");
         request.getSession().removeAttribute("userRole");
 
-        response.sendRedirect("auth");
+        response.sendRedirect(request.getContextPath());
     }
 }

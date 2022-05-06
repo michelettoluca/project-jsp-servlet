@@ -35,6 +35,15 @@ public class ReservationDAO {
         }
     }
 
+    public static List<Reservation> getUserReservation(int id) {
+        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
+            Query<Reservation> q = session.createQuery("from Reservation where user.id = :id", Reservation.class);
+            q.setParameter("id", id);
+
+            return q.getResultList();
+        }
+    }
+
     public static Reservation getReservation(int id) {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             Query<Reservation> q = session.createQuery("from Reservation where id = :id", Reservation.class);
@@ -108,7 +117,25 @@ public class ReservationDAO {
         }
     }
 
-    public static void approveReservation(int id) {
+    public static void updateReservationStatus(int id, ReservationStatus status) {
+        Transaction transaction = null;
 
+        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
+            Reservation reservation = getReservation(id);
+            if (reservation == null) return;
+
+            transaction = session.beginTransaction();
+
+            reservation.setStatus(status);
+
+            session.update(reservation);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+
+            e.printStackTrace();
+        }
     }
 }

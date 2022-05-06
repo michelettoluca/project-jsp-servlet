@@ -10,10 +10,10 @@
 </head>
 <body>
 <div class="form-wrapper">
-    <form method="POST" action="${pageContext.request.contextPath}/auth">
-        <button type="button" name="back" onclick="history.back()">Go back</button>
-        <span class="form-header">Sign up</span>
-        <input type="hidden" name="action" value="SIGN_UP"/>
+    <form method="POST" action="${pageContext.request.contextPath}/admin">
+        <span class="form-header">Edit customer</span>
+        <input type="hidden" name="action" value="EDIT_CUSTOMER"/>
+        <input type="hidden" name="id" value="${param.id}"/>
         <div class="form-field">
             <label class="input-label" for="firstName">First name</label>
             <input class="input-text" type="text" name="firstName" id="firstName" placeholder="First name"
@@ -26,13 +26,10 @@
         </div>
         <div class="form-field">
             <label class="input-label" for="username">Username</label>
-            <input class="input-text" type="text" name="username" id="username" placeholder="Username"/>
+            <input class="input-text" type="text" name="username" id="username" placeholder="Username"
+                   value="${param.username}"/>
         </div>
-        <div class="form-field">
-            <label class="input-label" for="password">Password</label>
-            <input class="input-text" type="password" name="password" id="password" placeholder="Password"/>
-        </div>
-        <button class="button-submit">Sign up</button>
+        <button class="button-submit">Edit customer</button>
     </form>
 </div>
 </body>

@@ -86,35 +86,35 @@ public class UserController extends HttpServlet {
         }
     }
 
-    private void getUsers(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void getUsers(HttpServletRequest request, HttpServletResponse response) {
         List<User> users = UserDAO.getUsers();
 
         request.setAttribute("users", users);
     }
 
-    private void getUserById(HttpServletRequest request, HttpServletResponse response, String pUserId) throws Exception {
+    private void getUserById(HttpServletRequest request, HttpServletResponse response, String pUserId) {
         int userId = Integer.parseInt(pUserId);
-        
+
         User user = UserDAO.getUser(userId);
 
         request.setAttribute("user", user);
     }
 
-    private void createUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void createUser(HttpServletRequest request, HttpServletResponse response) {
         String pFirstName = request.getParameter("firstName");
         String pLastName = request.getParameter("lastName");
         String pRole = request.getParameter("role");
-        String pPassword = request.getParameter("password");
         String pUsername = request.getParameter("username");
+        String pPassword = request.getParameter("password");
 
-        UserRoles role = UserRoles.valueOf(pRole);
+        UserRoles role = pRole != null ? UserRoles.valueOf(pRole) : null;
 
-        User newUser = new User(pFirstName, pLastName, role, pPassword, pUsername);
+        User newUser = new User(pFirstName, pLastName, role, pUsername, pPassword);
 
-        UserDAO.saveUser(newUser);
+        UserDAO.createUser(newUser);
     }
 
-    private void updateUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void updateUser(HttpServletRequest request, HttpServletResponse response) {
         String pId = request.getParameter("id");
         String pFirstName = request.getParameter("firstName");
         String pLastName = request.getParameter("lastName");
@@ -124,25 +124,12 @@ public class UserController extends HttpServlet {
 
         int id = Integer.parseInt(pId);
 
-        User user = UserDAO.getUser(id);
+        UserRoles role = pRole != null ? UserRoles.valueOf(pRole) : null;
 
-        if (pFirstName != null) user.setFirstName(pFirstName);
-
-        if (pLastName != null) user.setLastName(pLastName);
-
-        if (pRole != null) {
-            UserRoles role = UserRoles.valueOf(pRole);
-            user.setRole(role);
-        }
-
-        if (pUsername != null) user.setUsername(pUsername);
-
-        if (pPassword != null) user.setPassword(pPassword);
-
-        UserDAO.saveUser(user);
+        UserDAO.updateUser(new User(id, pFirstName, pLastName, role, pUsername, pPassword));
     }
 
-    private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void deleteUser(HttpServletRequest request, HttpServletResponse response) {
         String pId = request.getParameter("id");
 
         int id = Integer.parseInt(pId);
