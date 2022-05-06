@@ -27,13 +27,13 @@
             <th>To</th>
             <th>Status</th>
         </tr>
-        <c:forEach var="vehicle" items="${reservations}">
+        <c:forEach var="reservation" items="${reservations}">
             <tr>
-                <td>${vehicle.vehicle.brand}</td>
-                <td>${vehicle.vehicle.model}</td>
-                <td>${vehicle.beginsAt}</td>
-                <td>${vehicle.endsAt}</td>
-                <td>${vehicle.status}</td>
+                <td>${reservation.vehicle.brand}</td>
+                <td>${reservation.vehicle.model}</td>
+                <td>${reservation.beginsAt}</td>
+                <td>${reservation.endsAt}</td>
+                <td>${reservation.status}</td>
             </tr>
         </c:forEach>
     </table>

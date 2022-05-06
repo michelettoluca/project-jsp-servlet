@@ -38,26 +38,26 @@
                     <th>plateNumber</th>
                     <th>type</th>
                 </tr>
-                <c:forEach var="vehicle" items="${vehicles}">
+                <c:forEach var="reservation" items="${vehicles}">
                     <c:url var="updateReservationUrl" value="vehicles">
                         <c:param name="action">UPDATE_VEHICLE</c:param>
-                        <c:param name="id">${vehicle.id}</c:param>
-                        <c:param name="brand">${vehicle.brand}</c:param>
-                        <c:param name="model">${vehicle.model}</c:param>
-                        <c:param name="dateOfRegistration">${vehicle.dateOfRegistration}</c:param>
-                        <c:param name="plateNumber">${vehicle.plateNumber}</c:param>
-                        <c:param name="type">${vehicle.type}</c:param>
+                        <c:param name="id">${reservation.id}</c:param>
+                        <c:param name="brand">${reservation.brand}</c:param>
+                        <c:param name="model">${reservation.model}</c:param>
+                        <c:param name="dateOfRegistration">${reservation.dateOfRegistration}</c:param>
+                        <c:param name="plateNumber">${reservation.plateNumber}</c:param>
+                        <c:param name="type">${reservation.type}</c:param>
                     </c:url>
                     <tr>
-                        <td>${vehicle.id}</td>
-                        <td>${vehicle.brand}</td>
-                        <td>${vehicle.model}</td>
-                        <td>${vehicle.dateOfRegistration}</td>
-                        <td>${vehicle.plateNumber}</td>
-                        <td>${vehicle.type}</td>
+                        <td>${reservation.id}</td>
+                        <td>${reservation.brand}</td>
+                        <td>${reservation.model}</td>
+                        <td>${reservation.dateOfRegistration}</td>
+                        <td>${reservation.plateNumber}</td>
+                        <td>${reservation.type}</td>
 
                         <td>
-                            <a href="reservations?action=CREATE_RESERVATION&vehicleId=${vehicle.id}">
+                            <a href="reservations?action=CREATE_RESERVATION&vehicleId=${reservation.id}">
                                 Reserve
                             </a>
                         </td>
@@ -65,7 +65,7 @@
                             <td>
                                 <form method="POST" action="vehicles">
                                     <input type="hidden" name="action" value="DELETE_VEHICLE">
-                                    <input type="hidden" name="id" value="${vehicle.id}">
+                                    <input type="hidden" name="id" value="${reservation.id}">
                                     <input type="submit" value="Delete">
                                 </form>
                             </td>

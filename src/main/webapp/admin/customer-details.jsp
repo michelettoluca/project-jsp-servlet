@@ -25,34 +25,34 @@
             </c:when>
             <c:otherwise>
                 <div class="reservation__list">
-                    <c:forEach var="vehicle" items="${user.reservations}">
+                    <c:forEach var="reservation" items="${user.reservations}">
                         <div class="reservation__item">
-                            <div class="reservation__status" data-status="${vehicle.status}"></div>
+                            <div class="reservation__status" data-status="${reservation.status}"></div>
                             <div class="vehicle__info__list">
                                 <div class="vehicle__info__item">
                                     <span class="info__label">Vehicle</span>
-                                    <span class="info__value">${vehicle.vehicle.brand} - ${vehicle.vehicle.model}</span>
+                                    <span class="info__value">${reservation.vehicle.brand} - ${reservation.vehicle.model}</span>
                                 </div>
                                 <div class="vehicle__info__item">
                                     <span class="info__label">Plate #</span>
-                                    <span class="info__value">${vehicle.vehicle.plateNumber}</span>
+                                    <span class="info__value">${reservation.vehicle.plateNumber}</span>
                                 </div>
                                 <div class="vehicle__info__item">
                                     <span class="info__label">Period</span>
-                                    <span class="info__value">${vehicle.beginsAt} - ${vehicle.endsAt}</span>
+                                    <span class="info__value">${reservation.beginsAt} - ${reservation.endsAt}</span>
                                 </div>
                             </div>
-                            <c:if test="${vehicle.status == 'PENDING'}">
+                            <c:if test="${reservation.status == 'PENDING'}">
                                 <div class="reservation__actions">
                                     <form method="POST" action="admin?userId=${user.id}">
                                         <input type="hidden" name="action" value="UPDATE_RESERVATION_STATUS">
-                                        <input type="hidden" name="reservationId" value="${vehicle.id}">
+                                        <input type="hidden" name="reservationId" value="${reservation.id}">
                                         <input type="hidden" name="reservationStatus" value="APPROVED">
                                         <input class="reservation__action --approve" type="submit" value="Approve">
                                     </form>
                                     <form method="POST" action="admin?userId=${user.id}">
                                         <input type="hidden" name="action" value="UPDATE_RESERVATION_STATUS">
-                                        <input type="hidden" name="reservationId" value="${vehicle.id}">
+                                        <input type="hidden" name="reservationId" value="${reservation.id}">
                                         <input type="hidden" name="reservationStatus" value="DENIED">
                                         <input class="reservation__action --deny" type="submit" value="Deny">
                                     </form>

@@ -23,27 +23,27 @@
                         <th>type</th>
                         <th>status</th>
                     </tr>
-                    <c:forEach var="vehicle" items="${reservations}">
+                    <c:forEach var="reservation" items="${reservations}">
                         <c:url var="updateReservationUrl" value="reservations">
                             <c:param name="action">UPDATE_RESERVATION</c:param>
-                            <c:param name="id">${vehicle.id}</c:param>
-                            <c:param name="userId">${vehicle.user.id}</c:param>
-                            <c:param name="vehicleId">${vehicle.vehicle.id}</c:param>
-                            <c:param name="beginsAt">${vehicle.beginsAt}</c:param>
-                            <c:param name="endsAt">${vehicle.endsAt}</c:param>
-                            <c:param name="status">${vehicle.status}</c:param>
+                            <c:param name="id">${reservation.id}</c:param>
+                            <c:param name="userId">${reservation.user.id}</c:param>
+                            <c:param name="vehicleId">${reservation.vehicle.id}</c:param>
+                            <c:param name="beginsAt">${reservation.beginsAt}</c:param>
+                            <c:param name="endsAt">${reservation.endsAt}</c:param>
+                            <c:param name="status">${reservation.status}</c:param>
                         </c:url>
                         <tr>
-                            <td>${vehicle.id}</td>
-                            <td>${vehicle.user}</td>
-                            <td>${vehicle.vehicle}</td>
-                            <td>${vehicle.beginsAt}</td>
-                            <td>${vehicle.endsAt}</td>
-                            <td>${vehicle.status}</td>
+                            <td>${reservation.id}</td>
+                            <td>${reservation.user}</td>
+                            <td>${reservation.vehicle}</td>
+                            <td>${reservation.beginsAt}</td>
+                            <td>${reservation.endsAt}</td>
+                            <td>${reservation.status}</td>
                             <td>
                                 <form method="POST" action="reservations">
                                     <input type="hidden" name="action" value="DELETE_RESERVATION">
-                                    <input type="hidden" name="id" value="${vehicle.id}">
+                                    <input type="hidden" name="id" value="${reservation.id}">
                                     <input type="submit" value="Delete">
                                 </form>
                             </td>
