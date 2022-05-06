@@ -355,3 +355,8 @@ table, th, td {
 .reservation__action.--deny {
     background-color: #f87171;
 }
+
+.reservation__date-range {
+    display: flex;
+    gap: 1rem;
+}

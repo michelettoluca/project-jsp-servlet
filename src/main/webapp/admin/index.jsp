@@ -12,8 +12,8 @@
             <input class="input-text" type="text" name="query" placeholder="Search customer">
             <input class="--hidden" type="submit"/>
         </form>
-        <a href="admin?action=ADD_CUSTOMER" class="button--dashed">
-            + Add another customer
+        <a href="admin?action=ADD_USER" class="button--dashed">
+            + Add customer
         </a>
         <div class="customers__list">
             <c:choose>

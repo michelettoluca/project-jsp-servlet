@@ -44,20 +44,15 @@ public class Reservation implements Serializable {
         this.status = status;
     }
 
-    public Reservation(User user, Vehicle vehicle, LocalDate beginsAt, LocalDate endsAt) {
+    public Reservation(User user, Vehicle vehicle, LocalDate beginsAt, LocalDate endsAt, ReservationStatus status) {
         this.user = user;
         this.vehicle = vehicle;
         this.beginsAt = beginsAt;
         this.endsAt = endsAt;
-        this.status = ReservationStatus.PENDING;
-    }
-
-    public Reservation(int id) {
-        this.id = id;
+        this.status = status;
     }
 
     public Reservation() {
-
     }
 
     public int getId() {

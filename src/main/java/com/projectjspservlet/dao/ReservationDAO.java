@@ -35,15 +35,6 @@ public class ReservationDAO {
         }
     }
 
-    public static List<Reservation> getUserReservation(int id) {
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            Query<Reservation> q = session.createQuery("from Reservation where user.id = :id", Reservation.class);
-            q.setParameter("id", id);
-
-            return q.getResultList();
-        }
-    }
-
     public static Reservation getReservation(int id) {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             Query<Reservation> q = session.createQuery("from Reservation where id = :id", Reservation.class);
@@ -53,50 +44,15 @@ public class ReservationDAO {
         }
     }
 
-    public static List<Reservation> getPendingReservations() {
+    public static List<Reservation> getReservationsWithStatus(ReservationStatus status) {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             Query<Reservation> q = session.createQuery("from Reservation where status = :status", Reservation.class);
-            q.setParameter("status", ReservationStatus.PENDING);
+            q.setParameter("status", status);
 
             return q.getResultList();
         }
     }
 
-    public static List<Reservation> getApprovedReservations() {
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            Query<Reservation> q = session.createQuery("from Reservation where status = :status", Reservation.class);
-            q.setParameter("status", ReservationStatus.APPROVED);
-
-            return q.getResultList();
-        }
-    }
-
-    public static List<Reservation> getDeniedReservations() {
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            Query<Reservation> q = session.createQuery("from Reservation where status = :status", Reservation.class);
-            q.setParameter("status", ReservationStatus.DENIED);
-
-            return q.getResultList();
-        }
-    }
-
-    public static void deleteReservation(Reservation reservation) {
-        Transaction transaction = null;
-
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-
-            session.delete(reservation);
-
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-
-            e.printStackTrace();
-        }
-    }
 
     public static void deleteReservation(int id) {
         Transaction transaction = null;

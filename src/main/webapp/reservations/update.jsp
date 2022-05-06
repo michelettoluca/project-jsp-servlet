@@ -29,9 +29,9 @@
         <div class="form-field">
             <label class="input-label" for="vehicleId">Vehicle</label>
             <select class="input-select" name="vehicleId" id="vehicleId">
-                <c:forEach var="reservation" items="${vehicles}">
-                    <option value="${reservation.id}" ${reservation.id == param.vehicleId ? "selected" : ""}>
-                            ${reservation.brand} - ${reservation.model}
+                <c:forEach var="vehicle" items="${vehicles}">
+                    <option value="${vehicle.id}" ${vehicle.id == param.vehicleId ? "selected" : ""}>
+                            ${vehicle.brand} - ${vehicle.model}
                     </option>
                 </c:forEach>
             </select>

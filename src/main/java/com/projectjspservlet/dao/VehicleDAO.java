@@ -26,7 +26,6 @@ public class VehicleDAO {
         }
     }
 
-
     public static List<Vehicle> getVehicles() {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             return session.createQuery("from Vehicle", Vehicle.class).list();
@@ -39,23 +38,6 @@ public class VehicleDAO {
             q.setParameter("id", id);
 
             return q.getSingleResult();
-        }
-    }
-
-    public static void deleteVehicle(Vehicle vehicle) {
-        Transaction transaction = null;
-
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-
-            session.delete(vehicle);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-
-            e.printStackTrace();
         }
     }
 

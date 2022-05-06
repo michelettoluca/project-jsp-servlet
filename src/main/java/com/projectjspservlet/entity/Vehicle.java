@@ -1,11 +1,8 @@
 package com.projectjspservlet.entity;
 
-import com.projectjspservlet.type.UserRoles;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -25,7 +22,7 @@ public class Vehicle implements Serializable {
     @Column(name = "date_of_registration")
     private LocalDate dateOfRegistration;
 
-    @Column(name = "plate_number")
+    @Column(name = "plate_number", unique = true)
     private String plateNumber;
 
     @Column(name = "type")
@@ -105,6 +102,14 @@ public class Vehicle implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
     }
 
     @Override

@@ -1,9 +1,7 @@
-package com.projectjspservlet.controller;
+package com.projectjspservlet.servlet;
 
 import com.projectjspservlet.dao.UserDAO;
-import com.projectjspservlet.dao.VehicleDAO;
 import com.projectjspservlet.entity.User;
-import com.projectjspservlet.entity.Vehicle;
 import com.projectjspservlet.type.UserRoles;
 
 import javax.servlet.RequestDispatcher;
@@ -13,12 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
 
 
 @WebServlet(name = "auth", value = "/auth")
-public class AuthController extends HttpServlet {
+public class AuthServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -93,7 +89,7 @@ public class AuthController extends HttpServlet {
 
         UserRoles role = UserRoles.CUSTOMER;
 
-        User user = UserDAO.createUser(new User(pFirstName, pLastName, role, pUsername, pPassword));
+        User user = UserDAO.saveUser(new User(pFirstName, pLastName, role, pUsername, pPassword));
 
         String redirectTo;
 

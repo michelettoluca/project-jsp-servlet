@@ -11,14 +11,12 @@
     <h1>${user.firstName} ${user.lastName}</h1>
 
     <div>
-        <c:url var="editProfileUrl" value="">
-            <c:param name="action" value="EDIT_PROFILE"/>
-            <c:param name="firstName" value="${user.firstName}"/>
-            <c:param name="lastName" value="${user.lastName}"/>
-            <c:param name="username" value="${user.username}"/>
-            <c:param name="password" value="${user.password}"/>
+        <c:url var="editUserUrl" value="users">
+            <c:param name="action" value="EDIT_USER"/>
+            <c:param name="origin" value="profile"/>
+            <c:param name="id" value="${user.id}"/>
         </c:url>
-        <a href="${editProfileUrl}">Edit profile</a>
+        <a href="${editUserUrl}">Edit profile</a>
     </div>
 
     <table>
@@ -29,13 +27,13 @@
             <th>To</th>
             <th>Status</th>
         </tr>
-        <c:forEach var="reservation" items="${reservations}">
+        <c:forEach var="vehicle" items="${reservations}">
             <tr>
-                <td>${reservation.vehicle.brand}</td>
-                <td>${reservation.vehicle.model}</td>
-                <td>${reservation.beginsAt}</td>
-                <td>${reservation.endsAt}</td>
-                <td>${reservation.status}</td>
+                <td>${vehicle.vehicle.brand}</td>
+                <td>${vehicle.vehicle.model}</td>
+                <td>${vehicle.beginsAt}</td>
+                <td>${vehicle.endsAt}</td>
+                <td>${vehicle.status}</td>
             </tr>
         </c:forEach>
     </table>

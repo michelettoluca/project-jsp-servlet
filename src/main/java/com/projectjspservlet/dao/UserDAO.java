@@ -1,7 +1,6 @@
 package com.projectjspservlet.dao;
 
 import com.projectjspservlet.config.HibernateConfig;
-import com.projectjspservlet.entity.Reservation;
 import com.projectjspservlet.entity.User;
 import com.projectjspservlet.type.UserRoles;
 import org.hibernate.Session;
@@ -11,73 +10,22 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class UserDAO {
-    public static User createUser(User user) {
+    public static User saveUser(User user) {
         Transaction transaction = null;
 
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
-            User sameUser = getUser(user.getUsername());
-            if (sameUser != null) return null;
-
-            session.save(user);
+            session.saveOrUpdate(user);
             transaction.commit();
 
             return user;
-
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
 
             e.printStackTrace();
 
             return null;
-        }
-    }
-
-    public static User updateUser(User user) {
-        Transaction transaction = null;
-
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-
-            System.out.println(user);
-
-            User currentUser = getUser(user.getId());
-
-            if (user.getFirstName() != null) currentUser.setFirstName(user.getFirstName());
-            if (user.getLastName() != null) currentUser.setLastName(user.getLastName());
-            if (user.getRole() != null) currentUser.setRole(user.getRole());
-            if (user.getUsername() != null) currentUser.setUsername(user.getUsername());
-            if (user.getPassword() != null) currentUser.setPassword(user.getPassword());
-
-            session.update(currentUser);
-            transaction.commit();
-
-            return user;
-
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-
-            e.printStackTrace();
-
-            return null;
-        }
-    }
-
-    public static void deleteUser(User user) {
-        Transaction transaction = null;
-
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-
-            session.delete(user);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-
-            e.printStackTrace();
         }
     }
 
