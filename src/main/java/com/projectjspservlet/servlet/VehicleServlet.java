@@ -51,7 +51,7 @@ public class VehicleServlet extends HttpServlet {
                     break;
 
                 default:
-                    dispatchTo += "/vehicle-list.jsp";
+                    dispatchTo += "/vehicles.jsp";
 
                     getAvailableVehicles(request);
             }
@@ -98,10 +98,14 @@ public class VehicleServlet extends HttpServlet {
 
             if (duration < 2) return;
 
-            List<Vehicle> vehicles = VehicleDAO.getAvailableVehicles(from, to);
+            List<Vehicle> availableVehicles = VehicleDAO.getAvailableVehicles(from, to);
 
-            request.setAttribute("vehicles", vehicles);
+            request.setAttribute("availableVehicles", availableVehicles);
         }
+
+        List<Vehicle> vehicles = VehicleDAO.getVehicles();
+
+        request.setAttribute("vehicles", vehicles);
     }
 
     private void getVehicle(HttpServletRequest request, String pVehicleId) {

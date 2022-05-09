@@ -9,6 +9,9 @@
             <c:if test="${sessionScope.userRole != null}">
                 <a class="nav__item" href="vehicles">Vehicles</a>
             </c:if>
+            <c:if test="${sessionScope.userRole == 'CUSTOMER'}">
+                <a class="nav__item" href="reservations">Reservations</a>
+            </c:if>
             <c:if test="${sessionScope.userRole == 'ADMIN'}">
                 <a class="nav__item" href="admin">Admin</a>
             </c:if>

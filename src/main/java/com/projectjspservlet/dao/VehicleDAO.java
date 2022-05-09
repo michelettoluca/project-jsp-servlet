@@ -36,11 +36,8 @@ public class VehicleDAO {
     }
 
     public static List<Vehicle> getAvailableVehicles(LocalDate from, LocalDate to) {
-        Transaction transaction = null;
 
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-
             Query<Vehicle> q = session.createQuery("from Vehicle as v where v.id not in " +
                             "(select v2.id from Vehicle as v2 inner join Reservation as r on r.vehicle.id = v2.id " +
                             "where (r.beginsAt between :from and :to or r.endsAt between :from and : to) and (r.status != :status))",
@@ -51,12 +48,7 @@ public class VehicleDAO {
             q.setParameter("status", ReservationStatus.DENIED);
 
             return q.getResultList();
-
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-
             e.printStackTrace();
 
             return null;

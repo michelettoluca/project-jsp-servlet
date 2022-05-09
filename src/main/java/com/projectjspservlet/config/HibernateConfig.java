@@ -17,6 +17,9 @@ import java.util.Properties;
 public class HibernateConfig {
     private static SessionFactory sessionFactory;
 
+    private HibernateConfig() {
+    }
+
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {

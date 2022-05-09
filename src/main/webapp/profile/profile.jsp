@@ -18,28 +18,7 @@
         </c:url>
         <a href="${editUserUrl}">Edit profile</a>
     </div>
-
-
-    <c:if test="${sessionScope.userRole != 'ADMIN'}">
-        <table>
-            <tr>
-                <th>Brand</th>
-                <th>Model</th>
-                <th>From</th>
-                <th>To</th>
-                <th>Status</th>
-            </tr>
-            <c:forEach var="reservation" items="${user.reservations}">
-                <tr>
-                    <td>${reservation.vehicle.brand}</td>
-                    <td>${reservation.vehicle.model}</td>
-                    <td>${reservation.beginsAt}</td>
-                    <td>${reservation.endsAt}</td>
-                    <td>${reservation.status}</td>
-                </tr>
-            </c:forEach>
-        </table>
-    </c:if>
+    
 </div>
 </body>
 </html>

@@ -8,15 +8,47 @@ import com.projectjspservlet.entity.User;
 import com.projectjspservlet.entity.Vehicle;
 import com.projectjspservlet.type.ReservationStatus;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 @WebServlet(name = "reservations", value = "/reservations")
 public class ReservationServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            String pAction = request.getParameter("action");
+            if (pAction == null) pAction = "DEFAULT";
+
+            String dispatchTo;
+
+            System.out.println("POST: " + pAction + " @UserServlet");
+            switch (pAction) {
+                case "EDIT_RESERVATION":
+                    dispatchTo = "reservations/save.jsp";
+
+                    getReservation(request);
+                    break;
+
+                default:
+                    dispatchTo = "reservations/reservation-list.jsp";
+                    getUserReservations(request);
+
+            }
+
+
+            RequestDispatcher getRequestDispatcher = request.getRequestDispatcher(dispatchTo);
+            getRequestDispatcher.forward(request, response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
@@ -33,7 +65,7 @@ public class ReservationServlet extends HttpServlet {
                     break;
 
                 case "EDIT_RESERVATION":
-                    redirectTo = "admin?userId=" + pUserId;
+                    redirectTo = pUserId != null ? "admin?userId=" + pUserId : "reservations";
 
                     saveReservation(request);
                     break;
@@ -45,6 +77,7 @@ public class ReservationServlet extends HttpServlet {
 
             response.sendRedirect(redirectTo);
         } catch (Exception e) {
+            //
             throw new RuntimeException(e);
         }
     }
@@ -98,5 +131,23 @@ public class ReservationServlet extends HttpServlet {
         int id = Integer.parseInt(pId);
 
         ReservationDAO.deleteReservation(id);
+    }
+
+    private void getReservation(HttpServletRequest request) {
+        String pId = request.getParameter("id");
+
+        int id = Integer.parseInt(pId);
+
+        Reservation reservation = ReservationDAO.getReservation(id);
+
+        request.setAttribute("reservation", reservation);
+    }
+
+    private void getUserReservations(HttpServletRequest request) {
+        int id = (int) request.getSession().getAttribute("userId");
+
+        User user = UserDAO.getUser(id);
+
+        request.setAttribute("reservations", user.getReservations());
     }
 }
