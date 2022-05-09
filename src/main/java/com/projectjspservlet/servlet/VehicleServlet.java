@@ -2,6 +2,8 @@ package com.projectjspservlet.servlet;
 
 import com.projectjspservlet.dao.VehicleDAO;
 import com.projectjspservlet.entity.Vehicle;
+import com.projectjspservlet.type.UserRoles;
+import com.projectjspservlet.utils.Utils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,7 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -21,36 +25,36 @@ public class VehicleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String pAction = request.getParameter("action") != null ? request.getParameter("action") : "DEFAULT";
-            String pVehicleId = request.getParameter("vehicleId");
+            boolean isAllowed = Utils.verifyRole(request, Arrays.asList(UserRoles.ADMIN, UserRoles.CUSTOMER));
+
+            if (!isAllowed) {
+                response.sendRedirect(request.getContextPath() + "?error=UNAUTHORIZED");
+                return;
+            }
+
+            String pAction = request.getParameter("action");
+            if (pAction == null) pAction = "DEFAULT";
 
             String dispatchTo = "/vehicles";
 
             System.out.println("GET: " + pAction + " @VehicleServlet");
             switch (pAction) {
-                case "CREATE_VEHICLE":
+                case "ADD_VEHICLE":
                     dispatchTo += "/save.jsp";
-
                     break;
 
-                case "UPDATE_VEHICLE":
-                    dispatchTo += "/update.jsp";
+                case "EDIT_VEHICLE":
+                    dispatchTo += "/save.jsp";
 
                     String pId = request.getParameter("id");
                     getVehicle(request, pId);
-
                     break;
 
                 default:
-                    dispatchTo += "/index.jsp";
-
-                    if (pVehicleId != null) {
-                        getVehicle(request, pVehicleId);
-                    }
+                    dispatchTo += "/vehicle-list.jsp";
 
                     getAvailableVehicles(request);
             }
-
 
             RequestDispatcher getRequestDispatcher = request.getRequestDispatcher(dispatchTo);
             getRequestDispatcher.forward(request, response);
@@ -67,18 +71,12 @@ public class VehicleServlet extends HttpServlet {
             System.out.println("POST: " + pAction + " @VehicleServlet");
             switch (pAction) {
                 case "ADD_VEHICLE":
-                    addVehicle(request);
-
-                    break;
-
                 case "EDIT_VEHICLE":
-                    updateVehicle(request);
-
+                    saveVehicle(request);
                     break;
 
                 case "DELETE_VEHICLE":
                     deleteVehicle(request);
-
                     break;
             }
 
@@ -92,16 +90,18 @@ public class VehicleServlet extends HttpServlet {
         String pFrom = request.getParameter("from");
         String pTo = request.getParameter("to");
 
-        if (pFrom != null && pTo != null) {
+        if (pFrom != null && !pFrom.isEmpty() && pTo != null && !pTo.isEmpty()) {
             LocalDate from = LocalDate.parse(pFrom);
             LocalDate to = LocalDate.parse(pTo);
 
-            List<Vehicle> vehicles = VehicleDAO.getVehicles();
+            long duration = ChronoUnit.DAYS.between(from, to);
+
+            if (duration < 2) return;
+
+            List<Vehicle> vehicles = VehicleDAO.getAvailableVehicles(from, to);
 
             request.setAttribute("vehicles", vehicles);
         }
-
-
     }
 
     private void getVehicle(HttpServletRequest request, String pVehicleId) {
@@ -112,36 +112,33 @@ public class VehicleServlet extends HttpServlet {
         request.setAttribute("vehicle", vehicle);
     }
 
-    private void addVehicle(HttpServletRequest request) {
+    private void saveVehicle(HttpServletRequest request) {
         String pBrand = request.getParameter("brand");
         String pModel = request.getParameter("model");
         String pDateOfRegistration = request.getParameter("dateOfRegistration");
         String pPlateNumber = request.getParameter("plateNumber");
         String pType = request.getParameter("type");
+        String pAction = request.getParameter("action");
 
         LocalDate dateOfRegistration = LocalDate.parse(pDateOfRegistration);
 
-        VehicleDAO.saveVehicle(new Vehicle(pBrand, pModel, dateOfRegistration, pPlateNumber, pType));
-    }
+        Vehicle vehicle;
+        if (pAction.equals("EDIT_VEHICLE")) {
+            String pId = request.getParameter("id");
+            int id = Integer.parseInt(pId);
 
-    private void updateVehicle(HttpServletRequest request) {
-        String pId = request.getParameter("id");
-        String pBrand = request.getParameter("brand");
-        String pModel = request.getParameter("model");
-        String pDateOfRegistration = request.getParameter("dateOfRegistration");
-        String pPlateNumber = request.getParameter("plateNumber");
-        String pType = request.getParameter("type");
+            vehicle = VehicleDAO.getVehicle(id);
 
-        int id = Integer.parseInt(pId);
-        LocalDate dateOfRegistration = pDateOfRegistration != null ? LocalDate.parse(pDateOfRegistration) : null;
+            if (vehicle == null) return;
 
-        Vehicle vehicle = VehicleDAO.getVehicle(id);
-
-        if (pBrand != null) vehicle.setBrand(pBrand);
-        if (pModel != null) vehicle.setModel(pModel);
-        if (dateOfRegistration != null) vehicle.setDateOfRegistration(dateOfRegistration);
-        if (pPlateNumber != null) vehicle.setPlateNumber(pPlateNumber);
-        if (pType != null) vehicle.setType(pType);
+            if (pBrand != null) vehicle.setBrand(pBrand);
+            if (pModel != null) vehicle.setModel(pModel);
+            if (dateOfRegistration != null) vehicle.setDateOfRegistration(dateOfRegistration);
+            if (pPlateNumber != null) vehicle.setPlateNumber(pPlateNumber);
+            if (pType != null) vehicle.setType(pType);
+        } else {
+            vehicle = new Vehicle(pBrand, pModel, dateOfRegistration, pPlateNumber, pType);
+        }
 
         VehicleDAO.saveVehicle(vehicle);
     }

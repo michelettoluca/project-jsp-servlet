@@ -3,11 +3,13 @@ package com.projectjspservlet.servlet;
 import com.projectjspservlet.dao.UserDAO;
 import com.projectjspservlet.entity.User;
 import com.projectjspservlet.type.UserRoles;
+import com.projectjspservlet.utils.Utils;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @WebServlet(name = "users", value = "/users")
@@ -16,6 +18,13 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            boolean isAllowed = Utils.verifyRole(request, Arrays.asList(UserRoles.ADMIN, UserRoles.CUSTOMER));
+
+            if (!isAllowed) {
+                response.sendRedirect(request.getContextPath() + "?error=UNAUTHORIZED");
+                return;
+            }
+
             String pAction = request.getParameter("action");
             if (pAction == null) pAction = "DEFAULT";
 
@@ -23,9 +32,8 @@ public class UserServlet extends HttpServlet {
 
             System.out.println("GET: " + pAction + " @UserServlet");
             switch (pAction) {
-                case "CREATE_USER":
+                case "ADD_USER":
                     dispatchTo = "/users/save.jsp";
-
                     break;
 
                 case "EDIT_USER":
@@ -35,11 +43,10 @@ public class UserServlet extends HttpServlet {
 
                     int id = Integer.parseInt(pId);
                     getUser(request, id);
-
                     break;
 
                 default:
-                    dispatchTo = "/users/index.jsp";
+                    dispatchTo = "/users/user-list.jsp";
 
                     getUsers(request);
             }
@@ -60,11 +67,8 @@ public class UserServlet extends HttpServlet {
             System.out.println("POST: " + pAction + " @UserServlet");
             switch (pAction) {
                 case "ADD_USER":
-                    addUser(request);
-                    break;
-
                 case "EDIT_USER":
-                    updateUser(request);
+                    saveUser(request);
                     break;
 
                 case "DELETE_USER":
@@ -90,40 +94,31 @@ public class UserServlet extends HttpServlet {
         request.setAttribute("user", user);
     }
 
-    private void addUser(HttpServletRequest request) {
+    private void saveUser(HttpServletRequest request) {
         String pFirstName = request.getParameter("firstName");
         String pLastName = request.getParameter("lastName");
-        String pRole = request.getParameter("role");
         String pUsername = request.getParameter("username");
         String pPassword = request.getParameter("password");
+        String pAction = request.getParameter("action");
 
-        UserRoles role = UserRoles.valueOf(pRole);
 
-        User user = new User(pFirstName, pLastName, role, pUsername, pPassword);
+        User user;
+        if (pAction.equals("EDIT_USER")) {
+            String pId = request.getParameter("id");
+            int id = Integer.parseInt(pId);
 
-        UserDAO.saveUser(user);
-    }
+            user = UserDAO.getUser(id);
 
-    private void updateUser(HttpServletRequest request) {
-        String pId = request.getParameter("id");
-        String pFirstName = request.getParameter("firstName");
-        String pLastName = request.getParameter("lastName");
-        String pRole = request.getParameter("role");
-        String pUsername = request.getParameter("username");
-        String pPassword = request.getParameter("password");
+            if (user == null) return;
 
-        int id = Integer.parseInt(pId);
-        UserRoles role = pRole != null ? UserRoles.valueOf(pRole) : null;
+            if (pFirstName != null) user.setFirstName(pFirstName);
+            if (pLastName != null) user.setLastName(pLastName);
+            if (pUsername != null) user.setUsername(pUsername);
+            if (pPassword != null) user.setPassword(pPassword);
 
-        User user = UserDAO.getUser(id);
-
-        if (user == null) return;
-
-        if (pFirstName != null) user.setFirstName(pFirstName);
-        if (pLastName != null) user.setLastName(pLastName);
-        if (role != null) user.setRole(role);
-        if (pUsername != null) user.setUsername(pUsername);
-        if (pPassword != null) user.setPassword(pPassword);
+        } else {
+            user = new User(pFirstName, pLastName, UserRoles.CUSTOMER, pUsername, pPassword);
+        }
 
         UserDAO.saveUser(user);
     }

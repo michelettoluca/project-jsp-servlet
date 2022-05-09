@@ -2,7 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
-<c:import url="../common/head.jsp"/>
+<head>
+    <c:import url="../common/head.jsp"/>
+    <title>Dashboard</title>
+</head>
 <body>
 <c:import url="../common/navbar.jsp"/>
 <div class="content">
@@ -12,7 +15,11 @@
             <input class="input-text" type="text" name="query" placeholder="Search customer">
             <input class="--hidden" type="submit"/>
         </form>
-        <a href="admin?action=ADD_USER" class="button--dashed">
+        <c:url var="addUserUrl" value="users">
+            <c:param name="action" value="ADD_USER"/>
+            <c:param name="origin" value="admin"/>
+        </c:url>
+        <a href="${addUserUrl}" class="button--dashed">
             + Add customer
         </a>
         <div class="customers__list">

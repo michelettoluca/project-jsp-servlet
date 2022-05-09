@@ -1,41 +1,43 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<c:set var="addOrEditText" value="${param.action == 'ADD_VEHICLE' ? 'Add new' : 'Edit'}"/>
 
 <html>
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <title>Add user</title>
+    <c:import url="../common/head.jsp"/>
+    <title>${addOrEditText} vehicle</title>
 </head>
 <body>
 
 <div class="form-wrapper">
     <form method="POST" action="${pageContext.request.contextPath}/vehicles">
-        <span class="form-header">Add new vehicle</span>
-        <input type="hidden" name="action" value="CREATE_VEHICLE"/>
+        <span class="form-header">${addOrEditText} vehicle</span>
+        <input type="hidden" name="action" value="${param.action}"/>
+        <input type="hidden" name="id" value="${vehicle.id}"/>
         <div class="form-field">
             <label class="input-label" for="brand">Brand</label>
-            <input class="input-text" type="text" name="brand" id="brand" placeholder="Brand"/>
+            <input class="input-text" type="text" name="brand" id="brand" placeholder="Brand" value="${vehicle.brand}"/>
         </div>
         <div class="form-field">
             <label class="input-label" for="model">Model</label>
-            <input class="input-text" type="text" name="model" id="model" placeholder="Model"/>
+            <input class="input-text" type="text" name="model" id="model" placeholder="Model" value="${vehicle.model}"/>
         </div>
         <div class="form-field">
             <label class="input-label" for="dateOfRegistration">Date of registration</label>
             <input class="input-text" type="date" name="dateOfRegistration" id="dateOfRegistration"
-                   placeholder="Date of registration"/>
+                   placeholder="Date of registration" value="${vehicle.dateOfRegistration}"/>
         </div>
         <div class="form-field">
             <label class="input-label" for="plateNumber">Plate number</label>
-            <input class="input-text" type="text" name="plateNumber" id="plateNumber" placeholder="Plate number"/>
+            <input class="input-text" type="text" name="plateNumber" id="plateNumber" placeholder="Plate number"
+                   value="${vehicle.plateNumber}"/>
         </div>
         <div class="form-field">
             <label class="input-label" for="type">Type</label>
-            <input class="input-text" type="text" name="type" id="type" placeholder="Type"/>
+            <input class="input-text" type="text" name="type" id="type" placeholder="Type" value="${vehicle.type}"/>
         </div>
-        <button class="button-submit">Create vehicle</button>
+        <button class="button-submit">${addOrEditText} vehicle</button>
     </form>
 </div>
 </body>

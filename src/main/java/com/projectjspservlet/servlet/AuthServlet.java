@@ -22,30 +22,25 @@ public class AuthServlet extends HttpServlet {
             String pAction = request.getParameter("action");
             if (pAction == null) pAction = "DEFAULT";
 
-            String dispatchTo = "/auth";
+            String dispatchTo;
 
+            System.out.println("GET: " + pAction + " @AuthServlet");
             switch (pAction) {
                 case "SIGN_IN":
-                    System.out.println("SIGN_IN");
-                    dispatchTo += "/sign-in.jsp";
-
+                    dispatchTo = "/auth/sign-in.jsp";
                     break;
 
                 case "SIGN_UP":
-                    System.out.println("SIGN_UP");
-                    dispatchTo += "/sign-up.jsp";
-
+                    dispatchTo = "/auth/sign-up.jsp";
                     break;
 
                 case "SIGN_OUT":
-                    System.out.println("SIGN_OUT");
                     signOut(request, response);
-
                     return;
 
                 default:
                     System.out.println("DEFAULT");
-                    dispatchTo += "/index.jsp";
+                    dispatchTo = "/auth/sign-in.jsp";
             }
 
             RequestDispatcher getRequestDispatcher = request.getRequestDispatcher(dispatchTo);
@@ -60,19 +55,17 @@ public class AuthServlet extends HttpServlet {
         try {
             String pAction = request.getParameter("action");
 
+            System.out.println("POST: " + pAction + " @AuthServlet");
             switch (pAction) {
                 case "SIGN_IN":
-                    System.out.println("SIGN_IN");
                     signIn(request, response);
                     break;
 
                 case "SIGN_UP":
-                    System.out.println("SIGN_UP");
                     signUp(request, response);
                     break;
 
                 default:
-                    System.out.println("DEFAULT");
                     response.sendRedirect("auth");
             }
 

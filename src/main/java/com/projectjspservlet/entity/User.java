@@ -2,7 +2,6 @@
 package com.projectjspservlet.entity;
 
 import com.projectjspservlet.type.UserRoles;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -32,7 +31,7 @@ public class User implements Serializable {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Reservation> reservations;
 
     public User(int id, String firstName, String lastName, UserRoles role, String username, String password) {

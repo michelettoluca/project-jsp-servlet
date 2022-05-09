@@ -5,10 +5,7 @@
 
 <html>
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <c:import url="../common/head.jsp"/>
     <title>${addOrEditText} customer</title>
 </head>
 <body>
@@ -17,6 +14,7 @@
         <span class="form-header">${addOrEditText} customer</span>
         <input type="hidden" name="origin" value="${param.origin}"/>
         <input type="hidden" name="action" value="${param.action}"/>
+        <input type="hidden" name="role" value="CUSTOMER"/>
         <input type="hidden" name="id" value="${param.id}"/>
         <div class="form-field">
             <label class="input-label" for="firstName">First name</label>

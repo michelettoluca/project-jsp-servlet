@@ -11,8 +11,9 @@
                     <c:param name="id" value="${user.id}"/>
                 </c:url>
                 <a class="customer_action --edit" href="${editUserUrl}">Edit</a>
-                <form method="POST" action="admin">
-                    <input type="hidden" name="action" value="DELETE_CUSTOMER"/>
+                <form method="POST" action="users">
+                    <input type="hidden" name="action" value="DELETE_USER"/>
+                    <input type="hidden" name="origin" value="admin"/>
                     <input type="hidden" name="id" value="${user.id}"/>
                     <input type="submit" value="Delete">
                 </form>
@@ -44,16 +45,16 @@
                             </div>
                             <c:if test="${reservation.status == 'PENDING'}">
                                 <div class="reservation__actions">
-                                    <form method="POST" action="admin?userId=${user.id}">
-                                        <input type="hidden" name="action" value="UPDATE_RESERVATION_STATUS">
-                                        <input type="hidden" name="reservationId" value="${reservation.id}">
-                                        <input type="hidden" name="reservationStatus" value="APPROVED">
+                                    <form method="POST" action="reservations?userId=${user.id}">
+                                        <input type="hidden" name="action" value="EDIT_RESERVATION">
+                                        <input type="hidden" name="id" value="${reservation.id}">
+                                        <input type="hidden" name="status" value="APPROVED">
                                         <input class="reservation__action --approve" type="submit" value="Approve">
                                     </form>
-                                    <form method="POST" action="admin?userId=${user.id}">
-                                        <input type="hidden" name="action" value="UPDATE_RESERVATION_STATUS">
-                                        <input type="hidden" name="reservationId" value="${reservation.id}">
-                                        <input type="hidden" name="reservationStatus" value="DENIED">
+                                    <form method="POST" action="reservations?userId=${user.id}">
+                                        <input type="hidden" name="action" value="EDIT_RESERVATION">
+                                        <input type="hidden" name="id" value="${reservation.id}">
+                                        <input type="hidden" name="status" value="DENIED">
                                         <input class="reservation__action --deny" type="submit" value="Deny">
                                     </form>
                                 </div>

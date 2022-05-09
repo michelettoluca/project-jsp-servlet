@@ -1,8 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <html>
 <head>
     <c:import url="../common/head.jsp"/>
+    <title>Vehicle list</title>
 </head>
 <body>
 <c:import url="../common/navbar.jsp"/>
@@ -22,7 +24,7 @@
     </form>
 
     <c:if test="${userRole == 'ADMIN'}">
-        <a href="vehicles?action=CREATE_VEHICLE">Add new vehicle</a>
+        <a href="vehicles?action=ADD_VEHICLE">Add new vehicle</a>
     </c:if>
     <c:choose>
         <c:when test="${vehicles.isEmpty()}">
@@ -42,11 +44,6 @@
                     <c:url var="updateReservationUrl" value="vehicles">
                         <c:param name="action">EDIT_VEHICLE</c:param>
                         <c:param name="id">${vehicle.id}</c:param>
-                        <c:param name="brand">${vehicle.brand}</c:param>
-                        <c:param name="model">${vehicle.model}</c:param>
-                        <c:param name="dateOfRegistration">${vehicle.dateOfRegistration}</c:param>
-                        <c:param name="plateNumber">${vehicle.plateNumber}</c:param>
-                        <c:param name="type">${vehicle.type}</c:param>
                     </c:url>
                     <tr>
                         <td>${vehicle.id}</td>
@@ -56,15 +53,17 @@
                         <td>${vehicle.plateNumber}</td>
                         <td>${vehicle.type}</td>
 
-                        <td>
-                            <form method="POST" action="reservations">
-                                <input type="hidden" name="action" value="ADD_RESERVATION">
-                                <input type="hidden" name="vehicleId" value="${vehicle.id}">
-                                <input type="hidden" name="beginsAt" value="${param.from}">
-                                <input type="hidden" name="endsAt" value="${param.to}">
-                                <input type="submit" value="Book reservation">
-                            </form>
-                        </td>
+                        <c:if test="${userRole != 'ADMIN'}">
+                            <td>
+                                <form method="POST" action="reservations">
+                                    <input type="hidden" name="action" value="ADD_RESERVATION">
+                                    <input type="hidden" name="vehicleId" value="${vehicle.id}">
+                                    <input type="hidden" name="beginsAt" value="${param.from}">
+                                    <input type="hidden" name="endsAt" value="${param.to}">
+                                    <input type="submit" value="Book reservation">
+                                </form>
+                            </td>
+                        </c:if>
                         <c:if test="${userRole == 'ADMIN'}">
                             <td>
                                 <form method="POST" action="vehicles">

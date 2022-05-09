@@ -29,13 +29,14 @@ public class ProfileServlet extends HttpServlet {
 
         getProfileData(request, userId);
 
-        RequestDispatcher getRequestDispatcher = request.getRequestDispatcher("/profile/index.jsp");
+        RequestDispatcher getRequestDispatcher = request.getRequestDispatcher("/profile/profile.jsp");
         getRequestDispatcher.forward(request, response);
     }
 
 
     private void getProfileData(HttpServletRequest request, int userId) {
         User user = UserDAO.getUser(userId);
+        
         request.setAttribute("user", user);
     }
 }

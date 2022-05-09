@@ -2,7 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>Title</title>
+    <c:import url="../common/head.jsp"/>
+    <title>User list</title>
 </head>
 <body>
 <div class="content">

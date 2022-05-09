@@ -7,7 +7,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-
 import java.util.List;
 
 public class ReservationDAO {
@@ -58,9 +57,11 @@ public class ReservationDAO {
         Transaction transaction = null;
 
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
+            Reservation reservation = getReservation(id);
+            if (reservation == null) return;
+
             transaction = session.beginTransaction();
 
-            Reservation reservation = getReservation(id);
             session.delete(reservation);
 
             transaction.commit();
