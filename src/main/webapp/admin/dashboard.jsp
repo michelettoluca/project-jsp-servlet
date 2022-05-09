@@ -25,7 +25,7 @@
         <div class="customers__list">
             <c:choose>
                 <c:when test="${customers.isEmpty()}">
-                    <i>No reservations found</i>
+                    <i>No customers found</i>
                 </c:when>
                 <c:otherwise>
                     <c:forEach var="tmpCustomer" items="${customers}">
